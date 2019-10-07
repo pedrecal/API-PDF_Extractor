@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  server:
+    container_name: PDF_EXTRACTOR_API
+    build: .
+    command: yarn dev
+    ports:
+      - "7777:7777"
+    volumes:
+      - .:/usr/app
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    image: "mongo"
+    container_name: MONGODB_MEDIUM
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
+    command: --logpath=/dev/null #--quiet
