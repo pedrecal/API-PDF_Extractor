@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
-
+const Joi = require('@hapi/joi');
 // TODO Validar registro de usuário
 
 exports.registerUser = async (req, res, next) => {
