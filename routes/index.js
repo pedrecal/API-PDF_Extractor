@@ -9,7 +9,11 @@ router.get('/', (req, res) => {
   res.send('Olá!');
 });
 
-router.post('/user/register', catchErrors(userController.registerUser));
-router.get('/user/login', catchErrors(authController.loginUser));
+router.post(
+  '/user/register',
+  userController.registerUser
+  // authController.loginUser
+);
+router.post('/user/login', catchErrors(authController.loginUser));
 
 module.exports = router;
