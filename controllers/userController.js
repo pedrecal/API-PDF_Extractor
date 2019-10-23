@@ -1,9 +1,45 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { registerValidation } = require('../handlers/validation');
 
 const User = mongoose.model('User');
+const Joi = require('@hapi/joi');
 
+const registerValidation = data => {
+  const schema = Joi.object().keys({
+    email: Joi.string()
+      .min(6)
+      .email()
+      .required(),
+    name: Joi.string()
+      .min(6)
+      .trim()
+      .required()
+      .error(errors => {
+        errors.forEach(err => {
+          console.log(err.code);
+          switch (err.code) {
+            case 'any.empty':
+              err.message = 'Value should not be empty!';
+              break;
+            case 'string.min':
+              err.message = `Erro em ${err.local.label}! O valor deve ter no mínimo ${err.local.limit} caracteres!`;
+              break;
+            case 'string.max':
+              err.message = `Value should have at most ${err.local.limit} characters!`;
+              break;
+            default:
+              break;
+          }
+        });
+        return errors;
+      }),
+    password: Joi.string()
+      .min(6)
+      .trim()
+      .required(),
+  });
+  return schema.validate(data);
+};
 // TODO Validar registro de usuário
 
 exports.registerUser = async (req, res, next) => {
@@ -40,5 +76,5 @@ exports.registerUser = async (req, res, next) => {
   } catch (e) {
     res.status(400).send(e);
   }
-  next(); // pass to authController.login
+  // next(); // pass to authController.login
 };
