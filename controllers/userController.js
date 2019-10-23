@@ -1,9 +1,26 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { registerValidation } = require('../handlers/validation');
 
 const User = mongoose.model('User');
+const Joi = require('@hapi/joi');
 
+const registerValidation = data => {
+  const schema = Joi.object({
+    email: Joi.string()
+      .min(6)
+      .email()
+      .required(),
+    name: Joi.string()
+      .min(6)
+      .trim()
+      .required(),
+    password: Joi.string()
+      .min(6)
+      .trim()
+      .required(),
+  });
+  return schema.validate(data);
+};
 // TODO Validar registro de usuário
 
 exports.registerUser = async (req, res, next) => {
@@ -40,5 +57,5 @@ exports.registerUser = async (req, res, next) => {
   } catch (e) {
     res.status(400).send(e);
   }
-  next(); // pass to authController.login
+  // next(); // pass to authController.login
 };
