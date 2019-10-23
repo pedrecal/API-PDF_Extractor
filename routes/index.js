@@ -1,17 +1,15 @@
 const express = require('express');
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 const { catchErrors } = require('../handlers/errorHandlers');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.send('Hey! It works!');
+  res.send('Olá!');
 });
 
-router.post('/register', catchErrors(userController.registerUser));
-
-router.post('/login', (req, res) => {
-  res.send('Register');
-});
+router.post('/user/register', catchErrors(userController.registerUser));
+router.get('/user/login', catchErrors(authController.loginUser));
 
 module.exports = router;
