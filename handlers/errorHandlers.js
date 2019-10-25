@@ -59,3 +59,29 @@ exports.productionErrors = (err, req, res, next) => {
     error: {},
   });
 };
+
+exports.joiErrors = errors => {
+  console.log(errors);
+  errors.forEach(err => {
+    switch (err.code) {
+      case 'any.empty':
+        err.message = `Erro em ${err.local.label}. O valor não pode ser vazio`;
+        break;
+      case 'any.required':
+        err.message = `${err.local.label} é obrigatório`;
+        break;
+      case 'string.min':
+        err.message = `Erro em ${err.local.label}. O valor deve ter no mínimo ${err.local.limit} caracteres.`;
+        break;
+      case 'string.max':
+        err.message = `Erro em ${err.local.label}. O valor não deve exceder ${err.local.limit} caracteres.`;
+        break;
+      case 'string.email':
+        err.message = `Erro em ${err.local.label}. Valor inválido.`;
+        break;
+      default:
+        break;
+    }
+  });
+  return errors;
+};

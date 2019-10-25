@@ -12,15 +12,22 @@ const userSchema = new Schema({
     lowercase: true,
     trim: true,
     required: 'Endereço de email obrigatório',
-    max: 255,
+    max: 128,
     min: 6,
   },
-  name: {
+  collegiate: {
     type: String,
-    required: 'Nome obrigatório',
+    required: 'Nome do Colegiado obrigatório',
     trim: true,
     min: 6,
-    max: 255,
+    max: 128,
+  },
+  department: {
+    type: String,
+    required: 'Nome do Departamento obrigatório',
+    trim: true,
+    min: 6,
+    max: 128,
   },
   password: {
     type: String,
@@ -36,7 +43,6 @@ const userSchema = new Schema({
   resetPasswordExpires: Date,
 });
 
-// userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });
 userSchema.plugin(mongodbErrorHandler);
 
 module.exports = mongoose.model('User', userSchema);
