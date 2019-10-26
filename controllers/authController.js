@@ -86,7 +86,7 @@ exports.loginUser = async (req, res) => {
   });
   res.header('authToken', token);
 
-  res.send('Login feito com sucesso');
+  return res.send('Login feito com sucesso');
 };
 
 // Middleware function that verify if the token belongs to a registered user
@@ -100,6 +100,6 @@ exports.isLoggedIn = (req, res, next) => {
     req.user = verified;
     next();
   } catch (e) {
-    res.status(400).send('Token Inválido');
+    return res.status(400).send('Token Inválido');
   }
 };
