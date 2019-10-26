@@ -134,9 +134,9 @@ exports.registerUser = async (req, res, next) => {
     const savedUser = await user.save();
     // TODO Remove
     console.log(savedUser);
-    res.status(200).send('Usuário salvo com sucesso');
+    return res.status(200).send('Usuário salvo com sucesso');
   } catch (e) {
-    res.status(400).send(e);
+    return res.status(400).send(e);
   }
   // next(); // pass to authController.login
 };
