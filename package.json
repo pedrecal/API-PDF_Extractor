@@ -10,8 +10,8 @@
     "node": ">= 12.8.1"
   },
   "scripts": {
-    "prod": "node ./start.js",
-    "dev": "nodemon ./start.js",
+    "prod": "node ./src/start.js",
+    "dev": "nodemon ./src/start.js",
     "dev-docker": "docker-compose up",
     "assets": "webpack -w --display-max-modules 0",
     "sample": "node ./data/load-sample-data.js",
