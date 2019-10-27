@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // Exposes a bunch of method
 
 // Get info from json package to use it in Swagger UI
 const packageInfo = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8')
+  fs.readFileSync(path.resolve(__dirname, '..', 'package.json'), 'utf8')
 );
 
 // Swagger Options
@@ -29,7 +29,7 @@ const options = {
     },
     basePath: `/api/`,
   },
-  apis: ['./controllers/*.js'],
+  apis: ['./src/controllers/*.js'],
 };
 
 const specs = swaggerJSDoc(options);
