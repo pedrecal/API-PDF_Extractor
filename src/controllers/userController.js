@@ -70,7 +70,7 @@ const { registerValidation } = require('../validators/userValidator');
  *         description: "There was an error. Verify the user object."
  */
 
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   // Validate user passed
   const { error } = registerValidation(req.body);
   if (error) {
@@ -87,3 +87,5 @@ exports.registerUser = async (req, res) => {
     return res.status(400).send(e.message);
   }
 };
+
+module.exports = { registerUser };
