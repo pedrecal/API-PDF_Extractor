@@ -6,7 +6,7 @@ const { registerValidation } = require('../validators/userValidator');
  *
  * definitions:
  *   AuthToken:
- *     description: "Authenticated User"
+ *     description: "Token from the authenticated user"
  *     type: "string"
  *     format: "Json Web Token"
  *   User:
@@ -19,6 +19,7 @@ const { registerValidation } = require('../validators/userValidator');
  *      email:
  *        type: "string"
  *        format: "email"
+ *        unique: true
  *        minLength: 6
  *        maxLength: 128
  *      collegiate:

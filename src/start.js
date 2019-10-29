@@ -17,7 +17,8 @@ mongoose.connection.on('error', err => {
 // READY?! Let's go!
 
 // import all of our schemas
-require('./schemas/User');
+require('./models/User');
+require('./models/FilePDF');
 
 // Start our app!
 const app = require('./app');

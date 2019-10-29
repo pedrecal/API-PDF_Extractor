@@ -1,8 +1,12 @@
 const express = require('express');
 const { catchErrors } = require('../handlers/errorHandlers');
+
 const { isLoggedIn } = require('../middlewares/isLoggedIn');
+const { multerPDF } = require('../middlewares/multer');
+
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const filesController = require('../controllers/filesController');
 
 const router = express.Router();
 
@@ -21,6 +25,14 @@ router.put(
 router.delete(
   '/user/deleteUser/:userEmail',
   catchErrors(authController.deleteUser)
+);
+
+// TCC File Related
+router.post(
+  '/postFile/TCC',
+  isLoggedIn,
+  multerPDF.single('tccFile'),
+  catchErrors(filesController.tccUpload)
 );
 
 module.exports = router;
