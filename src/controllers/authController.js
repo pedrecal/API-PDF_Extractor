@@ -4,6 +4,7 @@ const {
   passwordValidation,
   emailAsParamValidation,
 } = require('../validators/userValidator');
+
 const {
   logInUser,
   recoverPassword,

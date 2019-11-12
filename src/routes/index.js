@@ -8,6 +8,8 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const filesController = require('../controllers/filesController');
 
+const dataController = require('../controllers/dataController');
+
 const router = express.Router();
 
 router.get('/', isLoggedIn, (req, res) => res.send('Olá!'));
@@ -34,5 +36,7 @@ router.post(
   multerPDF.single('tccFile'),
   catchErrors(filesController.tccUpload)
 );
+
+router.get('/extracted', catchErrors(dataController.listAllExtracted));
 
 module.exports = router;

@@ -4,45 +4,53 @@ const { Schema } = mongoose;
 mongoose.Promise = global.Promise;
 const mongodbErrorHandler = require('mongoose-mongodb-errors');
 
-const FilePDFSchema = new Schema(
+const TCCSchema = new Schema(
   {
     userID: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-      max: 256,
-      min: 6,
+    fileID: {
+      type: Schema.Types.ObjectId,
+      ref: 'FilePDF',
     },
-    key: {
+    verified: Boolean,
+    school: {
       type: String,
-      unique: true,
+      // required: true,
+    },
+    author: {
+      type: String,
       trim: true,
       required: true,
-      max: 256,
-      min: 6,
     },
-    type: {
+    title: {
       type: String,
       required: true,
     },
-    filePath: {
+    advisor: {
       type: String,
       required: true,
     },
-    size: {
-      type: Number,
+    coAdvisor: {
+      type: String,
+    },
+    abstract: {
+      type: String,
       required: true,
     },
+    keyWords: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
 
-FilePDFSchema.plugin(mongodbErrorHandler);
+TCCSchema.plugin(mongodbErrorHandler);
 
-module.exports = mongoose.model('FilePDF', FilePDFSchema);
+module.exports = mongoose.model('TCC', TCCSchema);
