@@ -6,7 +6,7 @@ const { registerValidation } = require('../validators/userValidator');
  *
  * definitions:
  *   AuthToken:
- *     description: "Authenticated User"
+ *     description: "Token from the authenticated user"
  *     type: "string"
  *     format: "Json Web Token"
  *   User:
@@ -19,6 +19,7 @@ const { registerValidation } = require('../validators/userValidator');
  *      email:
  *        type: "string"
  *        format: "email"
+ *        unique: true
  *        minLength: 6
  *        maxLength: 128
  *      collegiate:
@@ -70,7 +71,7 @@ const { registerValidation } = require('../validators/userValidator');
  *         description: "There was an error. Verify the user object."
  */
 
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   // Validate user passed
   const { error } = registerValidation(req.body);
   if (error) {
@@ -87,3 +88,5 @@ exports.registerUser = async (req, res) => {
     return res.status(400).send(e.message);
   }
 };
+
+module.exports = { registerUser };

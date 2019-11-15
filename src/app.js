@@ -2,8 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const express = require('express');
-const bodyParser = require('body-parser');
-
+const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const routes = require('./routes/index');
@@ -11,8 +10,11 @@ const routes = require('./routes/index');
 const app = express();
 
 // Takes the raw requests and turns them into usable properties on req.body
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // Exposes a bunch of methods for validating data. Used heavily on userController.validateRegister
+app.use(express.json());
+// Exposes a bunch of methods for validating data. Used heavily on userController.validateRegister
+app.use(express.urlencoded({ extended: true }));
+// Log requests and time
+app.use(morgan('dev'));
 
 // Get info from json package to use it in Swagger UI
 const packageInfo = JSON.parse(
