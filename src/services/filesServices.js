@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const { verifyToken } = require('../services/authTokenService');
-const { getTCCData } = require('./extractionService');
+const { getFileData } = require('./extractionService');
 
 const FilePDF = mongoose.model('FilePDF');
 const TCC = mongoose.model('TCC');
 const User = mongoose.model('User');
 
-const saveFile = async (file, userToken) => {
+const saveFile = async (file, userToken, docType) => {
   const { _id: userID } = verifyToken(userToken);
   let school = await User.find({ _id: userID }).select({
     _id: 0,
@@ -32,30 +32,20 @@ const saveFile = async (file, userToken) => {
     filePath,
     key,
   });
-
+  // await extractData(filePath);
   try {
     // Register the new file on DB
-    await newFile.save();
+    // await newFile.save();
     // Extract infos from de PDF file
-    const {
-      author,
-      title,
-      advisor,
-      coadvisor,
-      abstract,
-      keyWords,
-    } = await getTCCData(filePath);
+    // console.log(docType);
+    const extractedData = await getFileData(filePath, docType);
     // save de extracted data to db
+    // const newAnalyzedTCC = await TCC.create({
     const newAnalyzedTCC = await TCC.create({
       userID,
       fileID: newFile._id,
       school,
-      author,
-      title,
-      advisor,
-      coadvisor,
-      keyWords,
-      abstract,
+      ...extractedData,
     });
     return newAnalyzedTCC;
   } catch (e) {

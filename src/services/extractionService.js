@@ -1,107 +1,157 @@
-const { extract, convert, findPage } = require('./extractByCoordService');
+const mongoose = require('mongoose');
 
-const backCoverOptions = {
-  firstPage: 2,
-  lastPage: 2,
-  normalizeWhitespace: true,
+const ExtractionParams = mongoose.model('ExtractionParams');
+const { extract, convert } = require('./extractByCoordService');
+
+const stringToRegex = string => {
+  const match = /^\/(.*)\/([a-z]*)$/.exec(string);
+  return new RegExp(match[1], match[2]);
 };
 
-const abstractOptions = {
-  firstPage: 4,
-  lastPage: 10,
-  normalizeWhitespace: true,
+const B64StringToRegex = base => {
+  const string = decodeURIComponent(
+    atob(base)
+      .split('')
+      .map(function(c) {
+        return `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`;
+      })
+      .join('')
+  );
+  return stringToRegex(string);
 };
 
-const advisorRE = /(?<=(Orientador(|a| \(a\))(| ):)\W)(\w.*)/gi;
-const rmCoad = / coorientador.*/gi;
-const coadvisorRE = /(?<=(Coorientador(|a| \(a\))(| ):)\W)(\w.*)/gi;
-
-const abstractRE = /(?<=(Resumo)\W)(\w.*)/gi;
-const rmKeyWords = /(Palavras( |-)Chave.*)/gi;
-const keyWordsRE = /(?<=(Palavras(|-| )chave(| ):)\W)(\w.*)/gi;
-
-const kWordSeparatorRE = /[,.;]/;
-
-const getInfoTCC = async file => {
-  const pdfObj = await convert(file, backCoverOptions);
-
-  const author = extract(
-    pdfObj.pages[0],
-    pdfObj.producer,
-    { x: 0, y: 0 },
-    { x: 600, y: 200 }
-  );
-
-  const title = extract(
-    pdfObj.pages[0],
-    pdfObj.producer,
-    { x: 0, y: 200 },
-    { x: 600, y: 370 }
-  );
-
-  const preamble = extract(
-    pdfObj.pages[0],
-    pdfObj.producer,
-    { x: 0, y: 375 },
-    { x: 600, y: 700 }
-  );
-
-  const advisor = preamble.replace(rmCoad, '').match(advisorRE)[0];
-  const coadvisor = preamble.match(coadvisorRE);
-
-  return { author, title, advisor, coadvisor };
+const contains = (target, pattern) => {
+  let value = 0;
+  pattern.forEach(function(regexString) {
+    const regex = stringToRegex(regexString);
+    value += target.match(regex) ? 1 : 0;
+  });
+  return value === pattern.length;
 };
 
-const findAbstractPage = async pdfObj => {
+const B64ArrayDecode = array => {
+  const newArray = [];
+  array.forEach(elem => {
+    newArray.push(B64StringToRegex(elem));
+  });
+  return newArray;
+};
+
+const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index += 1) {
+    await callback(array[index], index, array);
+  }
+};
+
+const findPage = async (file, param) => {
+  const pdfObj = await convert(file, {
+    firstPage: param.pages[0],
+    lastPage: param.pages[1],
+    normalizeWhitespace: true,
+  });
+
+  param.keyWords = B64ArrayDecode(param.keyWords);
+
   let foundPage;
-  pdfObj.pages.forEach((page, index) => {
-    let abstractPage = extract(
+
+  pdfObj.pages.forEach(page => {
+    const pageText = extract(
       page,
       pdfObj.producer,
-      { x: 0, y: 0 },
-      { x: 600, y: 700 }
+      param.coordinatesStart,
+      param.coordinatesEnd
     );
 
     //! TODO Fix to regex
-    abstractPage = abstractPage.toUpperCase();
-    if (
-      abstractPage.includes('RESUMO') &&
-      abstractPage.includes('PALAVRAS-CHAVE')
-    ) {
-      foundPage = index;
+    if (contains(pageText.toUpperCase(), param.keyWords)) {
+      foundPage = pageText;
     }
   });
+
   return foundPage;
 };
 
-const getAbstractAndKeyWords = async file => {
-  const pdfObj = await convert(file, abstractOptions);
+const searchAndExtract = async (params, file) => {
+  let extractedInfo = {};
 
-  const abstractPage = await findAbstractPage(pdfObj);
+  await asyncForEach(params, async param => {
+    const pageContent = await findPage(file, param);
+    // if (param.extractionTitle === 'summary') {
+    //   console.log(pageContent);
+    // }
+    if (param.regex) {
+      const re = B64StringToRegex(param.regex);
 
-  const abstractAndKeyWords = extract(
-    pdfObj.pages[abstractPage],
-    pdfObj.producer,
-    { x: 0, y: 0 },
-    { x: 600, y: 700 }
-  );
+      const [, info] = re.exec(pageContent);
 
-  const abstract = abstractAndKeyWords
-    .replace(rmKeyWords, '')
-    .match(abstractRE)[0];
-  const keyWords = abstractAndKeyWords
-    .match(keyWordsRE)[0]
-    .split(kWordSeparatorRE)
-    .filter(Boolean)
-    .trim();
+      if (info) {
+        extractedInfo = { ...extractedInfo, [param.extractionTitle]: info };
+      } else {
+        extractedInfo = { ...extractedInfo, [param.extractionTitle]: '' };
+      }
+    } else {
+      extractedInfo = {
+        ...extractedInfo,
+        [param.extractionTitle]: pageContent,
+      };
+    }
+  });
 
-  return { abstract, keyWords };
+  return extractedInfo;
 };
 
-const getTCCData = async file => {
-  const basicInfo = await getInfoTCC(file);
-  const abstractAndKW = await getAbstractAndKeyWords(file);
-  return { ...basicInfo, ...abstractAndKW };
+const extractData = async (params, file) => {
+  let allInfo = {};
+
+  await asyncForEach(params, async (param, index) => {
+    // console.log(index, param);
+    const pdfObj = await convert(file, {
+      firstPage: param.pages[0],
+      lastPage: param.pages[0],
+    });
+
+    const extractedInfo = extract(
+      pdfObj.pages[0],
+      pdfObj.producer,
+      param.coordinatesStart,
+      param.coordinatesEnd
+    );
+
+    if (param.regex) {
+      const re = B64StringToRegex(param.regex);
+
+      // const info = extractedInfo.match(re);
+      // console.log(extractedInfo);
+      const info = re.exec(extractedInfo);
+
+      if (info) {
+        allInfo = { ...allInfo, [param.extractionTitle]: info[1] };
+      } else {
+        allInfo = { ...allInfo, [param.extractionTitle]: '' };
+      }
+    } else {
+      allInfo = { ...allInfo, [param.extractionTitle]: extractedInfo };
+    }
+  });
+  // console.log(allInfo);
+
+  return allInfo;
 };
 
-module.exports = { getInfoTCC, getAbstractAndKeyWords, getTCCData };
+// TODO Pipeline -> getPDFData(file, typeFile)
+const getFileData = async (file, docType) => {
+  // get all params from that docType
+  const params = await ExtractionParams.find({ docType });
+
+  const searchParams = params.filter(param => param.keyWords.length);
+  const specificParams = params.filter(param => param.keyWords.length === 0);
+
+  const basicInfo = await extractData(specificParams, file);
+  // console.log('basicInfo', basicInfo);
+  const searchedInfo = await searchAndExtract(searchParams, file);
+  // console.log('searchedInfo', searchedInfo);
+
+  return { ...basicInfo, ...searchedInfo };
+};
+
+module.exports = { getFileData };

@@ -54,7 +54,7 @@ const logInUser = async (email, password) => {
 
 // Reset password token is saved in the database
 const generateResetPasswordToken = async email => {
-  //! TODO: Maybe i shouldn't be checking this in 2 places
+  // TODO findUserByEmail method
   // Check if user email exists
   const user = await User.findOne({ email });
   if (!user) {
@@ -68,7 +68,6 @@ const generateResetPasswordToken = async email => {
 };
 
 const recoverPassword = async email => {
-  //! TODO: Maybe i shouldn't be checking this in 2 places
   const user = await User.findOne({ email });
   if (!user) {
     throw new ValidationException(`There's no account with that email`);

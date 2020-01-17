@@ -32,9 +32,6 @@ const TCCSchema = new Schema(
       type: String,
       required: true,
     },
-    coAdvisor: {
-      type: String,
-    },
     abstract: {
       type: String,
       required: true,
@@ -42,12 +39,13 @@ const TCCSchema = new Schema(
     keyWords: [
       {
         type: String,
-        required: true,
+        // required: true,
       },
     ],
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
 
