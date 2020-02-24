@@ -3,7 +3,7 @@ const { Types } = require('mongoose');
 
 const assignToken = payload => {
   const token = jwt.sign(payload, process.env.TOKEN_SECRET, {
-    expiresIn: '5h',
+    expiresIn: '24h',
   });
   return token;
 };

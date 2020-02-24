@@ -1,4 +1,4 @@
 require('./User');
 require('./FilePDF');
-require('./TCC');
+require('./ExtractedData');
 require('./ExtractionParams');

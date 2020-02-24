@@ -76,18 +76,24 @@ const { saveFile } = require('../services/filesServices');
  *         required: true
  *     responses:
  *       200:
- *         description: "File uploaded successfully"
+ *         description: "Extracted Information"
+ *         schema:
+ *            type: object
  *       400:
  *         description: "Something went wrong with the file upload"
  */
 
-const tccUpload = async (req, res) => {
+const pdfUpload = async (req, res) => {
   try {
-    const saved = await saveFile(req.file, req.headers.authtoken, req.body.docType);
+    const saved = await saveFile(
+      req.file,
+      req.headers.authtoken,
+      req.body.docType
+    );
     return res.status(200).send(saved);
   } catch (e) {
     return res.status(400).send(e.message);
   }
 };
 
-module.exports = { tccUpload };
+module.exports = { pdfUpload };

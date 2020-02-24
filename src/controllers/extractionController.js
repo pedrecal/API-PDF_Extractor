@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const TCC = mongoose.model('TCC');
+const ExtractedData = mongoose.model('ExtractedData');
 const ExtractionParams = mongoose.model('ExtractionParams');
 
 const { persistParam } = require('../services/extractionParamServices');
@@ -33,7 +33,7 @@ const listAllParams = async (req, res) => {
  * /extraction/allExtracted:
  *   get:
  *     tags:
- *     - "Extraction"
+ *     - "Extracted"
  *     summary: "Return all extracted information"
  *     description: ""
  *     produces:
@@ -48,8 +48,8 @@ const listAllParams = async (req, res) => {
  */
 
 const listAllExtracted = async (req, res) => {
-  const TCCs = await TCC.find({});
-  return res.json(TCCs);
+  const allExtractedData = await ExtractedData.find({});
+  return res.json(allExtractedData);
 };
 
 /**
@@ -57,7 +57,7 @@ const listAllExtracted = async (req, res) => {
  * /extraction/removeExtracted/{dataID}:
  *   delete:
  *     tags:
- *     - "Extraction"
+ *     - "Extracted"
  *     summary: "Remove extraction data from specific"
  *     description: ""
  *     produces:
@@ -69,8 +69,10 @@ const listAllExtracted = async (req, res) => {
 
 const removeExtracted = async (req, res) => {
   try {
-    const deletedTCC = await TCC.deleteOne({ _id: req.params.dataID });
-    return res.json(deletedTCC);
+    const deletedData = await ExtractedData.deleteOne({
+      _id: req.params.dataID,
+    });
+    return res.json(deletedData);
   } catch (e) {
     console.error(e);
     return res.status(400).send(e.message);
@@ -169,7 +171,9 @@ const setExtractionParams = async (req, res) => {
 
 const removeExtractionParam = async (req, res) => {
   try {
-    const deletedParam = await ExtractionParams.deleteOne({ _id: req.params.dataID });
+    const deletedParam = await ExtractionParams.deleteOne({
+      _id: req.params.dataID,
+    });
     return res.json(deletedParam);
   } catch (e) {
     console.error(e);
@@ -182,5 +186,5 @@ module.exports = {
   setExtractionParams,
   removeExtracted,
   listAllParams,
-  removeExtractionParam
+  removeExtractionParam,
 };

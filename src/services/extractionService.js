@@ -151,6 +151,8 @@ const getFileData = async (file, docType) => {
   const searchedInfo = await searchAndExtract(searchParams, file);
   // console.log('searchedInfo', searchedInfo);
 
+  console.log({ ...basicInfo, ...searchedInfo });
+
   return { ...basicInfo, ...searchedInfo };
 };
 

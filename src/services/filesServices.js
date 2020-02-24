@@ -3,7 +3,7 @@ const { verifyToken } = require('../services/authTokenService');
 const { getFileData } = require('./extractionService');
 
 const FilePDF = mongoose.model('FilePDF');
-const TCC = mongoose.model('TCC');
+const ExtractData = mongoose.model('ExtractData');
 const User = mongoose.model('User');
 
 const saveFile = async (file, userToken, docType) => {
@@ -40,14 +40,14 @@ const saveFile = async (file, userToken, docType) => {
     // console.log(docType);
     const extractedData = await getFileData(filePath, docType);
     // save de extracted data to db
-    // const newAnalyzedTCC = await TCC.create({
-    const newAnalyzedTCC = await TCC.create({
+    // const newAnalyzedPDF = await ExtractData.create({
+    const newAnalyzedPDF = await ExtractData.create({
       userID,
       fileID: newFile._id,
       school,
       ...extractedData,
     });
-    return newAnalyzedTCC;
+    return newAnalyzedPDF;
   } catch (e) {
     throw e;
   }

@@ -29,12 +29,12 @@ router.delete(
   catchErrors(authController.deleteUser)
 );
 
-// TCC File Related
+// PDF File Related
 router.post(
   '/postFile',
   isLoggedIn,
   multerPDF.single('pdfFile'),
-  catchErrors(filesController.tccUpload)
+  catchErrors(filesController.pdfUpload)
 );
 
 router.post(
