@@ -11,16 +11,13 @@ services:
       - .:/usr/pdf-extractor-api
     environment:
       NODE_ENV: development
-    depends_on:
-      - db
-    links:
-      - db
-
-  db:
-    image: "mongo"
-    container_name: MONGODB_MEDIUM
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./data/db:/data/db
-    command: --logpath=/dev/null #--quiet
+  #   depends_on:
+  #     - db
+  #   links:
+  #     - db
+  # db:
+  #   image: "bitnami/mongodb:latest"
+  #   container_name: "mongodb"
+  #   ports:
+  #     - "27017:27017"
+  # command: --logpath=/dev/null #--quiet

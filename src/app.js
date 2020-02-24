@@ -24,10 +24,19 @@ const packageInfo = JSON.parse(
 // Swagger Options
 const options = {
   swaggerDefinition: {
+    components: {},
     info: {
       title: packageInfo.name,
       version: packageInfo.version,
       description: packageInfo.description,
+    },
+    securityDefinitions: {
+      apiKey: {
+        type: 'apiKey',
+        name: 'ApiKeyAuth',
+        scheme: 'bearer',
+        in: 'header',
+      },
     },
     basePath: `/api/`,
   },

@@ -8,7 +8,7 @@ const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 const filesController = require('../controllers/filesController');
 
-const dataController = require('../controllers/dataController');
+const extractionController = require('../controllers/extractionController');
 
 const router = express.Router();
 
@@ -29,14 +29,38 @@ router.delete(
   catchErrors(authController.deleteUser)
 );
 
-// TCC File Related
+// PDF File Related
 router.post(
-  '/postFile/TCC',
+  '/postFile',
   isLoggedIn,
-  multerPDF.single('tccFile'),
-  catchErrors(filesController.tccUpload)
+  multerPDF.single('pdfFile'),
+  catchErrors(filesController.pdfUpload)
 );
 
-router.get('/extracted', catchErrors(dataController.listAllExtracted));
+router.post(
+  '/extraction/setExtractionParams',
+  isLoggedIn,
+  catchErrors(extractionController.setExtractionParams)
+);
+
+router.get(
+  '/extraction/allExtracted',
+  catchErrors(extractionController.listAllExtracted)
+);
+
+router.delete(
+  '/extraction/removeExtracted/:dataID',
+  catchErrors(extractionController.removeExtracted)
+);
+
+router.get(
+  '/extraction/registeredParams',
+  catchErrors(extractionController.listAllParams)
+);
+
+router.delete(
+  '/extraction/registeredParams/:dataID',
+  catchErrors(extractionController.removeExtractionParam)
+);
 
 module.exports = router;

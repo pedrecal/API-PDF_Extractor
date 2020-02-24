@@ -14,12 +14,8 @@ mongoose.connection.on('error', err => {
   console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`);
 });
 
-// READY?! Let's go!
-
 // import all of our schemas
-require('./models/User');
-require('./models/FilePDF');
-require('./models/TCC');
+require('./models');
 
 // Start our app!
 const app = require('./app');

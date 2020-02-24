@@ -50,8 +50,10 @@ const { registerValidation } = require('../validators/userValidator');
  *  @swagger
  * /user/register:
  *   post:
+ *     security:
+ *       - apiKey: []
  *     tags:
- *     - "user"
+ *     - "User"
  *     summary: "Sign In new User"
  *     description: ""
  *     operationId: "registerUser"

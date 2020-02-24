@@ -44,22 +44,22 @@ const { saveFile } = require('../services/filesServices');
 
 /**
  *  @swagger
- * /postFile/TCC:
+ * /postFile:
  *   post:
  *     tags:
  *     - "FilePDF"
- *     summary: "Upload TCC File"
+ *     summary: "Upload File"
  *     description: ""
- *     operationId: "tccUpload"
+ *     operationId: "fileUpload"
  *     produces:
  *     - "application/json"
  *     consumes:
  *       - multipart/form-data
  *     parameters:
  *       - in: formData
- *         name: tccFile
+ *         name: pdfFile
  *         type: file
- *         description: TCC File to upload
+ *         description: File to upload
  *         x-mimetype: application/pdf
  *         required: true
  *       - in: header
@@ -68,20 +68,32 @@ const { saveFile } = require('../services/filesServices');
  *           type: string
  *           format: Json Web Token
  *         required: true
+ *       - in: formData
+ *         name: docType
+ *         schema:
+ *           type: string
+ *           format: string
+ *         required: true
  *     responses:
  *       200:
- *         description: "File uploaded successfully"
+ *         description: "Extracted Information"
+ *         schema:
+ *            type: object
  *       400:
  *         description: "Something went wrong with the file upload"
  */
 
-const tccUpload = async (req, res) => {
+const pdfUpload = async (req, res) => {
   try {
-    const saved = await saveFile(req.file, req.headers.authtoken);
+    const saved = await saveFile(
+      req.file,
+      req.headers.authtoken,
+      req.body.docType
+    );
     return res.status(200).send(saved);
   } catch (e) {
     return res.status(400).send(e.message);
   }
 };
 
-module.exports = { tccUpload };
+module.exports = { pdfUpload };

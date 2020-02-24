@@ -17,7 +17,7 @@ const {
  * /user/login:
  *   post:
  *     tags:
- *     - "user"
+ *     - "User"
  *     summary: "Log User"
  *     description: ""
  *     operationId: "loginUser"
@@ -72,7 +72,7 @@ const loginUser = async (req, res) => {
  * /user/forgotPassword:
  *   post:
  *     tags:
- *     - "user"
+ *     - "User"
  *     summary: "Rest user password"
  *     description: ""
  *     operationId: "forgotPassword"
@@ -120,7 +120,7 @@ const forgotPassword = async (req, res) => {
  * /user/resetPassword/{resetPasswordToken}:
  *   put:
  *     tags:
- *     - "user"
+ *     - "User"
  *     summary: "Rest user password"
  *     description: ""
  *     operationId: "resetPassword"
@@ -171,8 +171,10 @@ const resetPassword = async (req, res) => {
  *  @swagger
  * /user/deleteUser/{userEmail}:
  *   delete:
+ *     security:
+ *       - apiKey: []
  *     tags:
- *     - "user"
+ *     - "User"
  *     summary: "Delete user"
  *     description: ""
  *     operationId: "deleteUser"
