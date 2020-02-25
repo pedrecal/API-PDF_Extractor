@@ -58,9 +58,9 @@ Add additional notes about how to deploy this on a live system -->
 
 ## Built With
 
-* [Node.JS]() - JavaScript
-* [PDF.JS]() - JavaScript
-* [Express]() - JavaScript
+* [Node.JS](https://nodejs.org/) - Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.
+* [PDF.JS](https://mozilla.github.io/pdf.js/) - A general-purpose, web standards-based platform for parsing and rendering PDFs.
+* [Express](http://expressjs.com/) - Fast, unopinionated, minimalist web framework for Node.js
 
 ## Contributing
 
