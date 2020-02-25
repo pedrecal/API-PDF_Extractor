@@ -3,7 +3,7 @@ const { verifyToken } = require('../services/authTokenService');
 const { getFileData } = require('./extractionService');
 
 const FilePDF = mongoose.model('FilePDF');
-const ExtractData = mongoose.model('ExtractData');
+const ExtractedData = mongoose.model('ExtractedData');
 const User = mongoose.model('User');
 
 const saveFile = async (file, userToken, docType) => {
@@ -32,7 +32,7 @@ const saveFile = async (file, userToken, docType) => {
     filePath,
     key,
   });
-  // await extractData(filePath);
+  // await ExtractedData(filePath);
   try {
     // Register the new file on DB
     // await newFile.save();
@@ -40,8 +40,8 @@ const saveFile = async (file, userToken, docType) => {
     // console.log(docType);
     const extractedData = await getFileData(filePath, docType);
     // save de extracted data to db
-    // const newAnalyzedPDF = await ExtractData.create({
-    const newAnalyzedPDF = await ExtractData.create({
+    // const newAnalyzedPDF = await ExtractedData.create({
+    const newAnalyzedPDF = await ExtractedData.create({
       userID,
       fileID: newFile._id,
       school,

@@ -20,15 +20,16 @@ const signInUser = async user => {
 
   // Create a new user
   const newUser = new User({
+    ...user,
     email: user.email,
-    collegiate: user.collegiate,
-    department: user.department,
     password: hashedPassword,
   });
 
   try {
     // Save new user to mongo
     await newUser.save();
+    // console.log(newUser);
+
     return true;
   } catch (e) {
     throw e;

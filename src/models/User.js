@@ -16,16 +16,8 @@ const userSchema = new Schema(
       max: 128,
       min: 6,
     },
-    collegiate: {
+    name: {
       type: String,
-      required: true,
-      trim: true,
-      min: 6,
-      max: 128,
-    },
-    department: {
-      type: String,
-      required: true,
       trim: true,
       min: 6,
       max: 128,
@@ -42,6 +34,7 @@ const userSchema = new Schema(
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
 
