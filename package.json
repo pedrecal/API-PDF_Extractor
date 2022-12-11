@@ -19,7 +19,7 @@
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.1.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "lodash.inrange": "^3.3.6",
     "lodash.sortby": "^4.7.0",
