@@ -20,7 +20,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash.inrange": "^3.3.6",
     "lodash.sortby": "^4.7.0",
     "mongoose": "^5.7.5",
